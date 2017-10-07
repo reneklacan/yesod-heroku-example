@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: fpco/stack-build
+        steps:
+          - checkout
+          - setup_remote_docker
+          - run: |
+              stack docker pull
+              stack build
