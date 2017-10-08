@@ -12,13 +12,29 @@ jobs:
             - stack-work-cache-{{ arch }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
             - stack-cache-{{ arch }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
 
-      - run: |
-          cp /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o.orig
-          cp /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginS.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o
+      - run:
+          name: Workaround for GCC bug affecting static compilation
+          command: |
+            # More info about this workaround:
+            # - https://www.fpcomplete.com/blog/2016/10/static-compilation-with-stack
+            # - https://bugs.launchpad.net/ubuntu/+source/gcc-4.4/+bug/640734
+            cp /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o.orig
+            cp /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginS.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o
 
-          stack config set system-ghc --global true
-          stack --local-bin-path ~/app/dist install --ghc-options '-optl-static -fPIC'
-          stack test
+      - run:
+          name: Configure Stack
+          command: |
+            stack config set system-ghc --global true
+
+      - run:
+          name: Statically compile Yesod app
+          command: |
+            stack --local-bin-path ~/app/dist install --ghc-options '-optl-static -fPIC'
+
+      - run:
+          name: Run tests
+          command: |
+            stack test
 
       - save_cache:
           key: stack-work-cache-{{ arch }}
