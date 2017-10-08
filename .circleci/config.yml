@@ -27,7 +27,7 @@ jobs:
       - save_cache:
           key: stack-cache-{{ arch }}
           paths:
-            - ~/app/.stack/
+            - ~/.stack/
 
       - store_artifacts:
           path: ~/app/dist
