@@ -42,6 +42,8 @@ jobs:
           name: Deploy Master to Heroku
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              git config --global user.email "rene.klacan@gmail.com"
+              git config --global user.name "Rene Klacan (CI)"
               git add -f dist
               git commit -m "Deployment: Add dist folder"
               git push -f heroku master
