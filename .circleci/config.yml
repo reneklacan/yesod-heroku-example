@@ -11,6 +11,7 @@ jobs:
       - restore_cache:
           keys:
             - stack-work-cache-{{ arch }}
+            - stack-cache-{{ arch }}
 
       - run: |
           cp /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o.orig
@@ -23,6 +24,10 @@ jobs:
           key: stack-work-cache-{{ arch }}
           paths:
             - ~/app/.stack-work/
+      - save_cache:
+          key: stack-cache-{{ arch }}
+          paths:
+            - ~/app/.stack/
 
       - store_artifacts:
           path: ~/app/dist
