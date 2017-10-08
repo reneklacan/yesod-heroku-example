@@ -3,17 +3,24 @@ jobs:
   build:
     docker:
       - image: fpco/stack-build
+    working_directory:
+      ~/app
     steps:
       - checkout
-      - setup_remote_docker
-      - run:
-          name: Install Docker client
-          command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            mv /tmp/docker/* /usr/bin
+
+      - restore_cache:
+          keys:
+            - stack-work-cache-{{ arch }}
 
       - run: |
+          stack config set system-ghc --global true
+          stack --local-bin-path ~/app/bin install --ghc-options '-optl-static -fPIC'
           docker build -t yesod-heroku .
+
+      - save_cache:
+          key: stack-work-cache-{{ arch }}
+          paths:
+            - ~/app/.stack-work/
+
+      - store_artifacts:
+          path: ~/app/bin
