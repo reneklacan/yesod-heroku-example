@@ -17,7 +17,7 @@ jobs:
           cp /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginS.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o
 
           stack config set system-ghc --global true
-          stack --local-bin-path ~/app/bin install --ghc-options '-optl-static -fPIC'
+          stack --local-bin-path ~/app/dist install --ghc-options '-optl-static -fPIC'
 
       - save_cache:
           key: stack-work-cache-{{ arch }}
@@ -25,4 +25,19 @@ jobs:
             - ~/app/.stack-work/
 
       - store_artifacts:
-          path: ~/app/bin
+          path: ~/app/dist
+
+      - run:
+          name: Setup Heroku
+          command: bash .circleci/setup-heroku.sh
+      - add_ssh_keys:
+          fingerprints:
+            - "34:e6:c0:32:7f:74:bf:19:0a:3a:09:52:e6:6e:12:52"
+      - deploy:
+          name: Deploy Master to Heroku
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              git add -f dist
+              git commit -m "Deployment: Add dist folder"
+              git push -f heroku master
+            fi
