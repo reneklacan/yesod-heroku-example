@@ -29,3 +29,8 @@ Environment variables you need to define in CircleCI project settings:
 1. Now when you commit and push to your repository it will trigger CircleCI build which will deploy your app to Heroku
 1. Once CircleCI build is finished, visit your app on Heroku and verify that it works - https://YOUR_HEROKU_PROJECT_NAME.herokuapp.com/
 1. Celebrate
+
+## Alternatives
+
+Another good alternative is to use [Stack's docker integration](https://github.com/commercialhaskell/stack/blob/master/doc/docker_integration.md) to build
+a docker image and deploy it to [Heroku Container Registry](https://devcenter.heroku.com/articles/container-registry-and-runtime).
