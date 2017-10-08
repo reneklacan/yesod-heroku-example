@@ -16,5 +16,4 @@ jobs:
             mv /tmp/docker/* /usr/bin
 
       - run: |
-          stack docker pull
-          stack build
+          docker build -t yesod-heroku .
