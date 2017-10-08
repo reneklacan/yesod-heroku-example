@@ -13,6 +13,9 @@ jobs:
             - stack-work-cache-{{ arch }}
 
       - run: |
+          cp /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o.orig
+          cp /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginS.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o
+
           stack config set system-ghc --global true
           stack --local-bin-path ~/app/bin install --ghc-options '-optl-static -fPIC'
           docker build -t yesod-heroku .
