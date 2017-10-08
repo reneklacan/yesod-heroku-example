@@ -10,8 +10,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - stack-work-cache-{{ arch }}
-            - stack-cache-{{ arch }}
+            - stack-work-cache-{{ arch }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+            - stack-cache-{{ arch }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
 
       - run: |
           cp /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginT.o.orig
@@ -23,9 +23,9 @@ jobs:
       - save_cache:
           key: stack-work-cache-{{ arch }}
           paths:
-            - ~/app/.stack-work/
+            - ~/app/.stack-work/-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
       - save_cache:
-          key: stack-cache-{{ arch }}
+          key: stack-cache-{{ arch }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
           paths:
             - ~/.stack/
 
